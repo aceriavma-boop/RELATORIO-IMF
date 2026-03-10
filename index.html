@@ -184,8 +184,10 @@
             btn.style.backgroundColor = "#2962ff";
             document.body.style.cursor = "default";
 
-            const msj = encodeURIComponent(`*REPORTE DE HORNO IMF*\n📅 *Fecha:* ${datos.fecha}\n✅ *Colada:* ${datos.idColada}\n✅ *Secuencia:* ${datos.secDia} (${datos.nColSec})\n\n_Imagen descargada. Selecciónala en WhatsApp._`);
-            window.open(`https://wa.me/?text=${msj}`, '_blank');
+            // Abrir WhatsApp directo sin texto para facilitar adjuntar la imagen
+            setTimeout(() => {
+                window.open(`https://wa.me/`, '_blank');
+            }, 800);
         });
     }
 </script>
