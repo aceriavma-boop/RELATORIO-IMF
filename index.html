@@ -1,11 +1,111 @@
-async function registrarYGenerar() {
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte Horno IMF - Siderurgia</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        :root { --blue-dark: #0d123d; --blue-main: #1a237e; --blue-light: #2962ff; --gray-bg: #f4f7f6; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: var(--gray-bg); margin: 0; padding: 10px; }
+        .container { max-width: 480px; margin: auto; background: white; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); overflow: hidden; padding-bottom: 35px; }
+        .header { background: var(--blue-dark); color: white; padding: 18px 15px; text-align: center; }
+        .section-title { background: #e8eaf6; padding: 8px 12px; font-weight: bold; color: var(--blue-main); font-size: 11px; text-transform: uppercase; border-left: 5px solid var(--blue-light); margin: 18px 0 12px 0; }
+        .form-content { padding: 12px 18px; }
+        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px; }
+        .triple-row { display: grid; grid-template-columns: 1fr 1fr 1.2fr; gap: 10px; margin-bottom: 10px; }
+        .quad-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 10px; }
+        label { display: block; font-size: 10px; font-weight: 800; color: #444; margin-bottom: 5px; text-transform: uppercase; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 6px; font-size: 15px; height: 45px; }
+        .chem-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .chem-item { text-align: center; background: #fdfdfd; padding: 8px; border: 1px solid #eee; border-radius: 8px; }
+        .btn-container { padding: 20px; text-align: center; max-width: 480px; margin: auto; }
+        .btn-submit { background: var(--blue-light); color: white; border: none; padding: 18px; width: 100%; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 16px; }
+    </style>
+</head>
+<body>
+
+<div id="reporteArea" class="container">
+    <div class="header">
+        <h2 style="margin:0">📊 CONTROL DE FUNDICIÓN</h2>
+        <div style="font-size: 10px; opacity: 0.8; margin-top: 5px;">REPORTE TÉCNICO - HORNO IMF</div>
+    </div>
+
+    <div class="form-content">
+        <div class="row">
+            <div><label>Fecha</label><input type="date" id="fecha"></div>
+            <div><label>Hora de Colada</label><input type="time" id="horario"></div>
+        </div>
+        <div class="row">
+            <div><label>Turno</label><select id="turno"><option>1º Turno</option><option>2º Turno</option><option>3º Turno</option></select></div>
+            <div><label>Supervisor</label><input type="text" id="supervisor"></div>
+        </div>
+
+        <div class="section-title">Carga Actual en Hornos (%)</div>
+        <div class="quad-row">
+            <div><label>H-A</label><input type="number" id="hA"></div>
+            <div><label>H-B</label><input type="number" id="hB"></div>
+            <div><label>H-C</label><input type="number" id="hC"></div>
+            <div><label>H-D</label><input type="number" id="hD"></div>
+        </div>
+
+        <div class="section-title">Datos de la Colada</div>
+        <div class="triple-row">
+            <div><label>Secuencia Día</label><select id="numSecuencia"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></div>
+            <div><label>Colada Sec.</label><select id="coladaEnSecuencia"><option>1ª</option><option>2ª</option><option>3ª</option><option>4ª</option></select></div>
+            <div><label>ID Colada</label><input type="text" id="idColada"></div>
+        </div>
+
+        <div class="section-title">Operacional</div>
+        <div class="triple-row">
+            <div><label>Temp. Vaciado</label><input type="number" id="temp"></div>
+            <div><label>Cant. Cargada</label><input type="number" id="cantCargada"></div>
+            <div><label>FeSiMn (kg)</label><input type="number" id="fesimn" placeholder="kgs"></div>
+        </div>
+        <div class="row">
+            <div><label>Vida Ref.</label><input type="number" id="vidaRef"></div>
+            <div><label>Limpieza Boca</label><select id="limpiezaBoca"><option>Sim</option><option>Não</option></select></div>
+        </div>
+        <div class="triple-row">
+            <div><label>Tap to Tap</label><input type="text" id="tapToTap"></div>
+            <div><label>Power On</label><input type="text" id="powerOn"></div>
+            <div><label>Power Off</label><input type="text" id="powerOff"></div>
+        </div>
+
+        <div class="section-title">Energía</div>
+        <div class="row">
+            <div><label>Potencia (KW)</label><input type="number" id="potencia"></div>
+            <div><label>Consumo</label><input type="number" id="consumo"></div>
+        </div>
+
+        <div class="section-title">Química (%)</div>
+        <div class="chem-grid">
+            <div class="chem-item"><label>C %</label><input type="text" id="c" value="0.00"></div>
+            <div class="chem-item"><label>Si %</label><input type="text" id="si" value="0.00"></div>
+            <div class="chem-item"><label>Mn %</label><input type="text" id="mn" value="0.00"></div>
+            <div class="chem-item"><label>Cu %</label><input type="text" id="cu" value="0.00"></div>
+            <div class="chem-item"><label>Zn %</label><input type="text" id="zn" value="0.00"></div>
+            <div class="chem-item"><label>Pb %</label><input type="text" id="pb" value="0.00"></div>
+        </div>
+    </div>
+</div>
+
+<div class="btn-container">
+    <button class="btn-submit" onclick="registrarYGenerar()">GENERAR Y GUARDAR REPORTE</button>
+</div>
+
+<script>
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbwxNOAo0RnH2FsWUejC_ILS5Ec6S4gT-XIs-aCiiXzZZqGcQF6HciCW55zjdpQmGkrT/exec';
+
+    window.onload = () => { document.getElementById('fecha').valueAsDate = new Date(); };
+
+    async function registrarYGenerar() {
         const btn = document.querySelector('.btn-submit');
         const area = document.getElementById('reporteArea');
         
         btn.innerText = "PROCESANDO...";
         btn.disabled = true;
 
-        // Captura de datos siguiendo exactamente tu lista de encabezados
         const datos = {
             fecha: document.getElementById('fecha').value,
             hora: document.getElementById('horario').value,
@@ -20,7 +120,7 @@ async function registrarYGenerar() {
             idColada: document.getElementById('idColada').value,
             temp: document.getElementById('temp').value,
             cant: document.getElementById('cantCargada').value,
-            fesimn: document.getElementById('fesimn').value, // FeSiMn
+            fesimn: document.getElementById('fesimn').value, 
             vida: document.getElementById('vidaRef').value,
             limpieza: document.getElementById('limpiezaBoca').value,
             tap: document.getElementById('tapToTap').value,
@@ -37,31 +137,20 @@ async function registrarYGenerar() {
         };
 
         try {
-            // Envío a Google Sheets
-            await fetch(scriptURL, { 
-                method: 'POST', 
-                mode: 'no-cors', 
-                body: JSON.stringify(datos) 
-            });
-        } catch (e) { 
-            console.error("Error al guardar en Sheets"); 
-        }
+            await fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(datos) });
+        } catch (e) { console.error("Error Sheets"); }
 
-        // Generación de la imagen para WhatsApp
-        html2canvas(area, { 
-            scale: 2, 
-            backgroundColor: "#ffffff"
-        }).then(canvas => {
+        html2canvas(area, { scale: 2, backgroundColor: "#ffffff" }).then(canvas => {
             const link = document.createElement('a');
-            link.download = `Colada_${datos.idColada}_${datos.fecha}.png`;
+            link.download = `Colada_${datos.idColada}.png`;
             link.href = canvas.toDataURL("image/png");
             link.click();
 
-            // Restaurar botón y vista
             btn.innerText = "GENERAR Y GUARDAR REPORTE";
             btn.disabled = false;
-            btn.style.backgroundColor = "#2962ff";
-            
             setTimeout(() => { window.open(`https://wa.me/`, '_blank'); }, 800);
         });
     }
+</script>
+</body>
+</html>
