@@ -8,20 +8,24 @@
     <style>
         :root { --blue-dark: #0d123d; --blue-main: #1a237e; --blue-light: #2962ff; --gray-bg: #f4f7f6; }
         body { font-family: 'Segoe UI', Arial, sans-serif; background-color: var(--gray-bg); margin: 0; padding: 10px; line-height: 1.4; }
-        .container { max-width: 480px; margin: auto; background: white; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); overflow: hidden; padding-bottom: 35px; }
+        .container { max-width: 480px; margin: auto; background: white; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); overflow: hidden; padding-bottom: 20px; }
         .header { background: var(--blue-dark); color: white; padding: 18px 15px; text-align: center; }
         .header h2 { margin: 0; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 1.5px; }
-        .section-title { background: #e8eaf6; padding: 8px 12px; font-weight: bold; color: var(--blue-main); font-size: 11px; text-transform: uppercase; border-left: 5px solid var(--blue-light); margin: 18px 0 12px 0; }
+        .section-title { background: #e8eaf6; padding: 8px 12px; font-weight: bold; color: var(--blue-main); font-size: 11px; text-transform: uppercase; border-left: 5px solid var(--blue-light); margin: 15px 0 10px 0; }
         .form-content { padding: 12px 18px; }
         .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px; }
         .quad-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 10px; }
         .triple-row { display: grid; grid-template-columns: 1fr 1fr 1.2fr; gap: 10px; margin-bottom: 10px; }
         label { display: block; font-size: 10px; font-weight: 800; color: #444; margin-bottom: 5px; text-transform: uppercase; }
-        input, select { width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box; font-size: 15px; background-color: #fff; height: 45px; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 6px; box-sizing: border-box; font-size: 14px; background-color: #fff; height: 42px; }
+        .auto-calc { background-color: #e3f2fd; font-weight: bold; color: #1a237e; border: 1px solid #bbdefb; }
+        
         .chem-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
         .chem-item { text-align: center; background: #fdfdfd; padding: 8px; border: 1px solid #eee; border-radius: 8px; }
-        .chem-item label { color: var(--blue-light); font-size: 11px; }
-        .chem-item input { border: none; background: transparent; text-align: center; font-weight: bold; font-size: 16px; border-bottom: 2px solid #ddd; width: 90%; height: auto; border-radius: 0; }
+        .chem-item label { color: var(--blue-light); font-size: 10px; }
+        .chem-item input { border: none; background: transparent; text-align: center; font-weight: bold; font-size: 15px; border-bottom: 2px solid #ddd; width: 90%; height: auto; border-radius: 0; padding: 5px 0; }
+
+        .maint-section { max-width: 480px; margin: 15px auto; background: #fff; border-radius: 12px; padding: 18px; border: 1px solid #ddd; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .btn-container { padding: 20px; text-align: center; max-width: 480px; margin: auto; }
         .btn-submit { background: var(--blue-light); color: white; border: none; padding: 18px; width: 100%; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 16px; transition: 0.3s; }
     </style>
@@ -37,11 +41,11 @@
     <div class="form-content">
         <div class="row">
             <div><label>Fecha</label><input type="date" id="fecha"></div>
-            <div><label>Hora de Colada</label><input type="time" id="horario"></div>
+            <div><label>Supervisor</label><input type="text" id="supervisor" placeholder="Nombre"></div>
         </div>
         <div class="row">
             <div><label>Turno</label><select id="turno"><option>1º Turno</option><option>2º Turno</option><option>3º Turno</option></select></div>
-            <div><label>Supervisor</label><input type="text" id="supervisor" placeholder="Nombre"></div>
+            <div><label>ID Colada</label><input type="text" id="idColada" placeholder="Ex: 501"></div>
         </div>
 
         <div class="section-title">Carga Actual en Hornos (%)</div>
@@ -54,28 +58,33 @@
 
         <div class="section-title">Datos de la Colada</div>
         <div class="triple-row">
-            <div><label>Secuencia Día</label><select id="numSecuencia"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></div>
-            <div><label>Colada Sec.</label><select id="coladaEnSecuencia"><option>1ª</option><option>2ª</option><option>3ª</option><option>4ª</option><option>5ª</option><option>6ª</option><option>7ª</option><option>8ª</option><option>9ª</option><option>10ª</option><option>11ª</option><option>12ª</option></select></div>
-            <div><label>ID Colada</label><input type="text" id="idColada" placeholder="501"></div>
+            <div><label>Secuencia Día</label><input type="number" id="numSecuencia" value="1"></div>
+            <div><label>N° Colada</label><input type="number" id="coladaEnSecuencia" value="1"></div>
+            <div><label>Horno</label><select id="hornoSeleccionado"><option>A</option><option>B</option><option>C</option><option>D</option></select></div>
         </div>
 
-        <div class="section-title">Operacional</div>
-        <div class="triple-row">
-            <div><label>Temp. Vaciado (°C)</label><input type="number" id="temp"></div>
-            <div><label>Cant. Cargada (T)</label><input type="number" id="cantCargada"></div>
-            <div><label>FeSiMn (kg)</label><input type="number" id="fesimn" placeholder="kgs"></div>
-        </div>
+        <div class="section-title">Operacional y Tiempos</div>
         <div class="row">
-            <div><label>Vida Refractario</label><input type="number" id="vidaRef"></div>
-            <div><label>Limpieza Boca</label><select id="limpiezaBoca"><option>Sim</option><option>Não</option></select></div>
+            <div><label>Hora Inicio</label><input type="time" id="horaInicio" onchange="calcularTTT()"></div>
+            <div><label>Hora Final</label><input type="time" id="horaFinal" onchange="calcularTTT()"></div>
         </div>
         <div class="triple-row">
-            <div><label>Tap to Tap</label><input type="text" id="tapToTap" placeholder="min"></div>
+            <div><label>Tap to Tap</label><input type="text" id="tapToTap" class="auto-calc" readonly placeholder="min"></div>
             <div><label>Power On</label><input type="text" id="powerOn" placeholder="min"></div>
             <div><label>Power Off</label><input type="text" id="powerOff" placeholder="min"></div>
         </div>
+        <div class="triple-row">
+            <div><label>Temp. Vaciado</label><input type="number" id="temp"></div>
+            <div><label>Cant. Cargada (T)</label><input type="number" id="cantCargada"></div>
+            <div><label>FeSiMn (kg)</label><input type="number" id="fesimn"></div>
+        </div>
+        <div class="triple-row">
+            <div><label>Vida Ref.</label><input type="number" id="vidaRef" oninput="checkSinterizacion()"></div>
+            <div><label>Sinterización</label><input type="text" id="sinterizacion" class="auto-calc" readonly value="NO"></div>
+            <div><label>Limpieza Boca</label><select id="limpiezaBoca"><option>NO</option><option>SI</option></select></div>
+        </div>
 
-        <div class="section-title">Energía</div>
+        <div class="section-title">Parámetros Eléctricos / Energía</div>
         <div class="row">
             <div><label>Potencia (KW)</label><input type="number" id="potencia"></div>
             <div><label>Consumo (KWH/T)</label><input type="number" id="consumo"></div>
@@ -93,6 +102,42 @@
     </div>
 </div>
 
+<div class="maint-section">
+    <div class="section-title" style="margin-top:0">Detalles de Mantenimiento / Fallas</div>
+    <label>Área</label>
+    <input list="list-area" id="area" placeholder="Buscar área...">
+    <datalist id="list-area">
+        <option value="ACERIA"><option value="ADMINISTRATIVO"><option value="AMBIENTAL"><option value="DEPOSITO"><option value="LAMINACION"><option value="MANTENIMIENTO"><option value="PATIO DE CHATARRA"><option value="PROYECTOS"><option value="SERVICIOS GENERALES"><option value="SEGURIDAD"><option value="UTILIDADES">
+    </datalist>
+
+    <label style="margin-top:10px">Sub Área</label>
+    <input list="list-subarea" id="subArea" placeholder="Buscar sub-área...">
+    <datalist id="list-subarea">
+        <option value="Horno a inducción"><option value="Colada continua"><option value="Puentes Gruas"><option value="Extractor de humo"><option value="Patio de Chatarra"><option value="Casa de bombas"><option value="ANDE"><option value="Gases (Oxigeno, nitrogeno, CO2)"><option value="Outros insumos"><option value="Maintenimiento preventivo">
+    </datalist>
+
+    <label style="margin-top:10px">Especialidad</label>
+    <input list="list-especialidad" id="especialidad" placeholder="Buscar especialidad...">
+    <datalist id="list-especialidad">
+        <option value="Operacion"><option value="Electricidad"><option value="Mecánica"><option value="Refractarios"><option value="Provedores"><option value="Automatización"><option value="Instrumentación"><option value="Servicios Generales"><option value="Proyetos"><option value="Mantenimiento Preventivo">
+    </datalist>
+
+    <label style="margin-top:10px">Equipo</label>
+    <input list="list-equipo" id="equipo" placeholder="Buscar equipo...">
+    <datalist id="list-equipo">
+        <option value="Aire acondicionado"><option value="Barra falsa"><option value="Bobina del horno"><option value="Bomba de agua"><option value="Bomba hidráulica"><option value="Cabo elétrico"><option value="Carro de la coifa"><option value="Carro Vibratorio"><option value="Censor"><option value="Ciclon"><option value="Cilindro hidráulico"><option value="Coifa de extracción"><option value="Compartimiento mangas"><option value="Compresores"><option value="Controlador Logico programable"><option value="Cuchara de Acero"><option value="Distribuidor acero (tundish)"><option value="Disyuntor"><option value="Empurrador hidraulico palanquillas"><option value="Espectrómetro"><option value="Extractor / endireitador palanquilla"><option value="Filtro de agua tipo cesta"><option value="Freno"><option value="Garra UNI 2"><option value="Garra UNI 3"><option value="Horno de inducion"><option value="Intercambiador de calor"><option value="Lecho de enfriamiento del palanquillas"><option value="Magneto UNI 2"><option value="Magneto UNI 3"><option value="Mangueira"><option value="Manipulador hidráulico"><option value="Medidor de la temperatura"><option value="Mesa de rodillos"><option value="Molde lingoteira"><option value="Motor eléctrico"><option value="Motovibrador"><option value="Oscilador"><option value="Panel electrico"><option value="Parafuso de remocion de polvo"><option value="Pote de escoria"><option value="Pulpito painel"><option value="Reductor"><option value="Retificador"><option value="Revestimiento refractário del horno"><option value="Rodillo de traccion (Pinch roller)"><option value="Ruedas"><option value="Sistema de translación"><option value="Tijera de palanquillas"><option value="Torre de enfriamiento"><option value="Transformador"><option value="Trocador de calor"><option value="Tuberia"><option value="UNI 1 - Grua 40 ton"><option value="UNI 2 - Grua del Patio Chatarra"><option value="UNI 3 - Grua de cargamiento del horno"><option value="UNI 6 - Grua de las palanquillas"><option value="UNI 7 - Grua 40 ton nueva"><option value="Unidad de lubricación"><option value="Unidad hidráulica"><option value="Válvula Hidráulica"><option value="Válvula rotativa"><option value="Ventilador">
+    </datalist>
+
+    <label style="margin-top:10px">Descripción Motivo</label>
+    <input list="list-desc" id="descripcion" placeholder="Buscar motivo...">
+    <datalist id="list-desc">
+        <option value="Aire comprimido baja pression"><option value="Aluminio indisponible"><option value="Atraso de preparacion del CCM"><option value="Atraso de preparacion del la cuchara"><option value="Atraso transporte personal"><option value="Breakout / perfuracion"><option value="Cabo electrico rompidó"><option value="Cambio de mold no CCM"><option value="Carbono alto"><option value="Chatarra con material explosivo"><option value="Chatarra con oleo o graza"><option value="Chatarra indisponible para cargar"><option value="Cilindro quebró"><option value="Colada de sinterizacion"><option value="Corte de energia"><option value="Corto Circuito"><option value="Falla electrica de la garra"><option value="Falla en la cuchara"><option value="Falla Energia - Ande"><option value="Falla Energia - outros"><option value="Falla Energia - substacion"><option value="Falla ventilador Sistema de Humos"><option value="Fe-alleaciones indisponible"><option value="Freno de la grua"><option value="GLD alto"><option value="Horno tripping"><option value="Laminillo Indisponible"><option value="Limites y sensor"><option value="Limpieza del topo del horno"><option value="Manipulador sin forza."><option value="Motor eletrico queimado"><option value="Operador de grua indisponible"><option value="Operador/bariman indisponible"><option value="Perdida de linha por agarramento"><option value="Perdida de linha por barra falsa"><option value="Perdida de sequencia"><option value="Problema életrico"><option value="Reacion en lo horno"><option value="Refractário del horno indisponible"><option value="Reparo anillo superior"><option value="Reparo boquilla"><option value="Reparo horno"><option value="Retorno Acero por perdida de linea"><option value="Retorno Acero por Carbono alto"><option value="Retorno Acero por clogging"><option value="Retorno Acero por problema eléctrico"><option value="Retorno Acero por problema mecánico"><option value="Regulagen de la valvua"><option value="Revestimento refratario (lining)"><option value="Rompeó la base del vibrador"><option value="Rompeó la garra - cilindros"><option value="Rompeó la mangueira"><option value="Rompeó la ponta manipulador"><option value="Rompeó lo cilindro"><option value="Sinterizacion Electrica"><option value="Sinterizacion Liquida"><option value="Temperatura del agua alta"><option value="Vazamiento de la bobina"><option value="Vazamiento de oleo">
+    </datalist>
+
+    <label style="margin-top:10px">Descripción con Detalles</label>
+    <input type="text" id="descDetalles" placeholder="Escribir más detalles...">
+</div>
+
 <div class="btn-container">
     <button class="btn-submit" onclick="registrarYGenerar()">GENERAR Y GUARDAR REPORTE</button>
 </div>
@@ -102,16 +147,38 @@
 
     window.onload = () => { document.getElementById('fecha').valueAsDate = new Date(); };
 
+    function checkSinterizacion() {
+        const vida = document.getElementById('vidaRef').value;
+        document.getElementById('sinterizacion').value = (vida == "1") ? "SI" : "NO";
+    }
+
+    function calcularTTT() {
+        const inicio = document.getElementById('horaInicio').value;
+        const final = document.getElementById('horaFinal').value;
+        if (!inicio || !final) return;
+
+        let [h1, m1] = inicio.split(':').map(Number);
+        let [h2, m2] = final.split(':').map(Number);
+
+        let d1 = new Date(2000, 0, 1, h1, m1);
+        let d2 = new Date(2000, 0, 1, h2, m2);
+
+        if (d2 < d1) d2.setDate(d2.getDate() + 1);
+
+        let diff = (d2 - d1) / (1000 * 60);
+        document.getElementById('tapToTap').value = Math.round(diff);
+    }
+
     async function registrarYGenerar() {
         const btn = document.querySelector('.btn-submit');
         const area = document.getElementById('reporteArea');
-        
         btn.innerText = "PROCESANDO...";
         btn.disabled = true;
 
         const datos = {
             fecha: document.getElementById('fecha').value,
-            hora: document.getElementById('horario').value,
+            // Enviamos la hora final como hora de colada para mantener compatibilidad
+            horaColada: document.getElementById('horaFinal').value, 
             turno: document.getElementById('turno').value,
             supervisor: document.getElementById('supervisor').value,
             hA: document.getElementById('hA').value,
@@ -120,13 +187,17 @@
             hD: document.getElementById('hD').value,
             secDia: document.getElementById('numSecuencia').value,
             nColSec: document.getElementById('coladaEnSecuencia').value,
+            horno: document.getElementById('hornoSeleccionado').value,
             idColada: document.getElementById('idColada').value,
+            hInicio: document.getElementById('horaInicio').value,
+            hFinal: document.getElementById('horaFinal').value,
             temp: document.getElementById('temp').value,
             cant: document.getElementById('cantCargada').value,
-            fesimn: document.getElementById('fesimn').value, 
+            fesimn: document.getElementById('fesimn').value,
             vida: document.getElementById('vidaRef').value,
+            sinter: document.getElementById('sinterizacion').value,
             limpieza: document.getElementById('limpiezaBoca').value,
-            tap: document.getElementById('tapToTap').value,
+            ttt: document.getElementById('tapToTap').value,
             pOn: document.getElementById('powerOn').value,
             pOff: document.getElementById('powerOff').value,
             pot: document.getElementById('potencia').value,
@@ -136,26 +207,26 @@
             mn: document.getElementById('mn').value,
             cu: document.getElementById('cu').value,
             zn: document.getElementById('zn').value,
-            pb: document.getElementById('pb').value
+            pb: document.getElementById('pb').value,
+            area: document.getElementById('area').value,
+            subarea: document.getElementById('subArea').value,
+            especialidad: document.getElementById('especialidad').value,
+            equipo: document.getElementById('equipo').value,
+            desc: document.getElementById('descripcion').value,
+            descDetalle: document.getElementById('descDetalles').value
         };
 
         try {
             await fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(datos) });
         } catch (e) { console.error("Error al guardar"); }
 
-        html2canvas(area, { 
-            scale: 2, 
-            backgroundColor: "#ffffff"
-        }).then(canvas => {
+        html2canvas(area, { scale: 2, backgroundColor: "#ffffff" }).then(canvas => {
             const link = document.createElement('a');
             link.download = `Reporte_${datos.idColada}.png`;
             link.href = canvas.toDataURL("image/png");
             link.click();
-
             btn.innerText = "GENERAR Y GUARDAR REPORTE";
             btn.disabled = false;
-            btn.style.backgroundColor = "#2962ff";
-            
             setTimeout(() => { window.open(`https://wa.me/`, '_blank'); }, 800);
         });
     }
