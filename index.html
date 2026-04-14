@@ -130,7 +130,7 @@
     <label style="margin-top:10px">Descripción Motivo</label>
     <input list="list-desc" id="descripcion" placeholder="Buscar motivo...">
     <datalist id="list-desc">
-        <option value="Aire comprimido baja pression"><option value="Aluminio indisponible"><option value="Atraso de preparacion del CCM"><option value="Atraso de preparacion del la cuchara"><option value="Atraso transporte personal"><option value="Breakout / perfuracion"><option value="Cabo electrico rompidó"><option value="Cambio de mold no CCM"><option value="Carbono alto"><option value="Chatarra con material explosivo"><option value="Chatarra con oleo o graza"><option value="Chatarra indisponible para cargar"><option value="Cilindro quebró"><option value="Colada de sinterizacion"><option value="Corte de energia"><option value="Corto Circuito"><option value="Falla electrica de la garra"><option value="Falla en la cuchara"><option value="Falla Energia - Ande"><option value="Falla Energia - outros"><option value="Falla Energia - substacion"><option value="Falla ventilador Sistema de Humos"><option value="Fe-alleaciones indisponible"><option value="Freno de la grua"><option value="GLD alto"><option value="Horno tripping"><option value="Laminillo Indisponible"><option value="Limites y sensor"><option value="Limpieza del topo del horno"><option value="Manipulador sin forza."><option value="Motor eletrico queimado"><option value="Operador de grua indisponible"><option value="Operador/bariman indisponible"><option value="Perdida de linha por agarramento"><option value="Perdida de linha por barra falsa"><option value="Perdida de sequencia"><option value="Problema életrico"><option value="Reacion en lo horno"><option value="Refractário del horno indisponible"><option value="Reparo anillo superior"><option value="Reparo boquilla"><option value="Reparo horno"><option value="Retorno Acero por perdida de linea"><option value="Retorno Acero por Carbono alto"><option value="Retorno Acero por clogging"><option value="Retorno Acero por problema eléctrico"><option value="Retorno Acero por problema mecánico"><option value="Regulagen de la valvua"><option value="Revestimento refratario (lining)"><option value="Rompeó la base del vibrador"><option value="Rompeó la garra - cilindros"><option value="Rompeó la mangueira"><option value="Rompeó la ponta manipulador"><option value="Rompeó lo cilindro"><option value="Sinterizacion Electrica"><option value="Sinterizacion Liquida"><option value="Temperatura del agua alta"><option value="Vazamiento de la bobina"><option value="Vazamiento de oleo">
+        <option value="Aire comprimido baja pression"><option value="Aluminio indisponible"><option value="Atraso de preparacion del CCM"><option value="Atraso de preparacion del la cuchara"><option value="Atraso transporte personal"><option value="Breakout / perfuracion"><option value="Cabo electrico rompidó"><option value="Cambio de mold no CCM"><option value="Carbono alto"><option value="Chatarra con material explosivo"><option value="Chatarra con oleo o graza"><option value="Chatarra indisponible para cargar"><option value="Cilindro quebró"><option value="Colada de sinterizacion"><option value="Corte de energia"><option value="Corto Circuito"><option value="Falla electrica de la garra"><option value="Falla en la cuchara"><option value="Falla Energia - Ande"><option value="Falla Energia - outros"><option value="Falla Energia - substacion"><option value="Falla ventilador Sistema de Humos"><option value="Fe-alleaciones indisponible"><option value="Freno de la grua"><option value="GLD alto"><option value="Horno tripping"><option value="Laminillo indisponible"><option value="Limites y sensor"><option value="Limpieza del topo del horno"><option value="Manipulador sin forza."><option value="Motor eletrico queimado"><option value="Operador de grua indisponible"><option value="Operador/bariman indisponible"><option value="Perdida de linha por agarramento"><option value="Perdida de linha por barra falsa"><option value="Perdida de sequencia"><option value="Problema életrico"><option value="Reacion en lo horno"><option value="Refractário del horno indisponible"><option value="Reparo anillo superior"><option value="Reparo boquilla"><option value="Reparo horno"><option value="Retorno Acero por perdida de linea"><option value="Retorno Acero por Carbono alto"><option value="Retorno Acero por clogging"><option value="Retorno Acero por problema eléctrico"><option value="Retorno Acero por problema mecánico"><option value="Regulagen de la valvua"><option value="Revestimento refratario (lining)"><option value="Rompeó la base del vibrador"><option value="Rompeó la garra - cilindros"><option value="Rompeó la mangueira"><option value="Rompeó la ponta manipulador"><option value="Rompeó lo cilindro"><option value="Sinterizacion Electrica"><option value="Sinterizacion Liquida"><option value="Temperatura del agua alta"><option value="Vazamiento de la bobina"><option value="Vazamiento de oleo">
     </datalist>
 
     <label style="margin-top:10px">Descripción con Detalles</label>
@@ -241,18 +241,19 @@
             subarea: document.getElementById('subArea').value,
             especialidad: document.getElementById('especialidad').value,
             equipo: document.getElementById('equipo').value,
-            desc: document.getElementById('descripcion').value, // <--- AQUÍ ESTÁ EL DESPLEGABLE QUE FALTABA
+            desc: document.getElementById('descripcion').value,
             descDetalle: document.getElementById('descDetalles').value,
             foto: fotoBase64
         };
 
-       try {
+        try {
             await fetch(scriptURL, { 
                 method: 'POST', 
+                mode: 'no-cors', 
                 body: JSON.stringify(datos) 
             });
-        } catch (e) { console.error("Error al enviar"); }
-        
+        } catch (e) { console.error("Error"); }
+
         btn.innerText = "CREANDO REPORTE...";
         html2canvas(area, { scale: 1.2, backgroundColor: "#ffffff" }).then(canvas => {
             const link = document.createElement('a');
